@@ -10,7 +10,7 @@ myIntents.add(Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MEMBERS, Intents.FLAGS.G
 const bot = new Client({ intents: myIntents });
 const prefix = "//";
 
-bot.commands = new Discord.Collection();
+bot.commands = new Client.Collection();
 
 const commandFiles = fs.readdirSync('./commands/').filter(file => file.endsWith('.js'));
 for(const file of commandFiles){
