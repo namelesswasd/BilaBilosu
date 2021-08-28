@@ -1,6 +1,6 @@
 require('dotenv').config();
 
-const { Client, Intents} = require('discord.js')
+const {Client, Intents} = require('discord.js');
 
 const fs = require('fs');
 
@@ -10,7 +10,7 @@ myIntents.add(Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MEMBERS, Intents.FLAGS.G
 const bot = new Client({ intents: myIntents });
 const prefix = "//";
 
-bot.commands = new Client.Collection();
+bot.commands = new bot.Collection();
 
 const commandFiles = fs.readdirSync('./commands/').filter(file => file.endsWith('.js'));
 for(const file of commandFiles){
