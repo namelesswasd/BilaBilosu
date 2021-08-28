@@ -1,9 +1,13 @@
 require('dotenv').config();
 
-const Discord = require('discord.js')
+const {Discord, Intents} = require('discord.js')
 
 const fs = require('fs');
-const bot = new Discord.Client();
+
+const myIntents = new Intents();
+myIntents.add(Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MEMBERS, Intents.FLAGS.GUILD_BANS, Intents.FLAGS.GUILD_BAN_REMOVE, Intents.FLAGS.GUILD_MESSAGES, Intents.FLAGS.GUILD_MESSAGE_REACTIONS, Intents.FLAGS.DIRECT_MESSAGES, Intents.FLAGS.DIRECT_MESSAGE_REACTIONS)
+
+const bot = new Discord.Client({ intents: myIntents });
 const prefix = "//";
 
 bot.commands = new Discord.Collection();
