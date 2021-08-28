@@ -1,0 +1,14 @@
+{
+  "name": "bilabilosu",
+  "version": "1.0.0",
+  "description": "Un bot de Discord folosit in server-ul Bila Gang",
+  "main": "bot.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "NLXdev",
+  "license": "ISC",
+  "dependencies": {
+    "discord.js": "^13.1.0"
+  }
+}
