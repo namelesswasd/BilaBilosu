@@ -35,13 +35,8 @@ bot.on('ready', () => {
     fs.appendFile('chatLog.txt', `\n\n// CHAT LOG : ${_date} //`, function (err) {
         if (err) return console.log(err);
     })
-    bot.user.setPresence({
-        status: "dnd",
-        activity: {
-          name: "Bila Gang",
-          type: "WATCHING"
-        }
-      });
+    bot.user.setStatus('dnd');
+    bot.user.setActivity('Bila Gang.', {type: 'WATCHING'});
     
     console.log(`${bot.user.tag} s-a logat.`);
 })
