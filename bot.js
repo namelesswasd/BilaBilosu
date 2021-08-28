@@ -104,7 +104,11 @@ bot.on('message', (message) => {
             bot.commands.get('bulkdelete').execute(message, args);
         } else if(cmd_name === "mate"){
             bot.commands.get('mate').execute(message, args);
-        } 
+        } else if(cmd_name === "play"){
+            bot.commands.get('play').execute(message, args);
+        } else if(cmd_name === "leave"){
+            bot.commands.get('leave').execute(message, args);
+        }
     }
 })
 
