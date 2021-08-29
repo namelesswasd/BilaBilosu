@@ -37,12 +37,16 @@ module.exports = {
         const video = await videoFinder(args.join(' '));
 
         if(video){
-            const stream = ytdl(video.url, {filter: 'audioonly'});
+            const stream = ytdl(string(video.url), {filter: 'audioonly'});
             const resource = createAudioResource(stream, { inputType: StreamType.Arbitrary });
             const player = createAudioPlayer();
 
+            console.log(stream + "\n" + resource + "\n" + player);
+
             player.play(resource);
             connection.subscribe(player);
+
+            console.log("reached here!")
 
             player.on(AudioPlayerStatus.Idle, () => connection.destroy());
 
