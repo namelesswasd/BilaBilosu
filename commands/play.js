@@ -41,20 +41,10 @@ module.exports = {
             const resource = createAudioResource(stream, { inputType: StreamType.Arbitrary });
             const player = createAudioPlayer();
 
-            console.log(stream + "\n" + resource + "\n" + player + "\n" + video.url);
-
             player.play(resource);
             connection.subscribe(player);
 
-            console.log("reached here!")
-
             player.on(AudioPlayerStatus.Idle, () => connection.destroy());
-
-            /*
-            connection.play(stream, {seek: 0, volume: 1})
-            .on('finish', () =>{
-                voiceChannel.leave();
-            });*/
 
             await message.reply(`cant **${video.title}**`)
         } else message.reply('nush ce drq mi-ai dat dar nu am gasit');
