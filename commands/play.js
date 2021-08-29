@@ -15,12 +15,14 @@ module.exports = {
         const voiceChannel = message.member.voice.channel;
         const guild = message.guild;
 
+        console.log(`\nvoiceChannel: ${voiceChannel}\nvoiceChannel.id: ${voiceChannel.id}\nguild: ${guild}\nguildId: ${guild.id}`);
+
         if(!voiceChannel) return message.reply('trebuie sa fii pe un canal tambea.');
         const permissions = voiceChannel.permissionsFor(message.client.user);
         if(!permissions.has("CONNECT") || !permissions.has("SPEAK")) return message.reply('tu nu ai voie boss');
         if(!args.length) return message.reply('ce drq vrei sa iti cant daca nu ai pus nimic?');
 
-        const connection = await joinVoiceChannel({
+        const connection = joinVoiceChannel({
             channelId: voiceChannel.id,
             guildId: guild.id,
             adapterCreator: guild.voiceAdapterCreator,
