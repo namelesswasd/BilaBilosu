@@ -15,8 +15,6 @@ module.exports = {
         const voiceChannel = message.member.voice.channel;
         const guild = message.guild;
 
-        console.log(`\nvoiceChannel: ${voiceChannel}\nvoiceChannel.id: ${voiceChannel.id}\nguild: ${guild}\nguildId: ${guild.id}`);
-
         if(!voiceChannel) return message.reply('trebuie sa fii pe un canal tambea.');
         const permissions = voiceChannel.permissionsFor(message.client.user);
         if(!permissions.has("CONNECT") || !permissions.has("SPEAK")) return message.reply('tu nu ai voie boss');
@@ -46,7 +44,7 @@ module.exports = {
 
             player.on(AudioPlayerStatus.Idle, () => connection.destroy());
 
-            await message.reply(`cant **${video.title}**`)
+            await message.reply(`!! Sunt sanse foarte mari sa dea bot-ul crash cat timp se reda melodia, nu stiu de ce... !!\ncant **${video.title}**`)
         } else message.reply('nush ce drq mi-ai dat dar nu am gasit');
     }
 }
