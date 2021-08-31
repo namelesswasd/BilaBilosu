@@ -90,7 +90,7 @@ bot.on('message', (message) => {
             }
         }
 
-        //cpmmand handler
+        //command handler
         if(cmd_name === "answer"){
             bot.commands.get('answer').execute(message, args);   
         } else if(cmd_name === "collatz"){
@@ -101,8 +101,10 @@ bot.on('message', (message) => {
             bot.commands.get('bulkdelete').execute(message, args);
         } else if(cmd_name === "mate"){
             bot.commands.get('mate').execute(message, args);
-        } else if(cmd_name === "play"){
+        } else if(cmd_name === "play" || cmd_name === "p"){
             bot.commands.get('play').execute(message, args);
+        } else if(cmd_name === "search" || cmd_name === "s"){
+            bot.commands.get('search').execute(message, args);
         } else if(cmd_name === "leave"){
             bot.commands.get('leave').execute(message, args);
         }
