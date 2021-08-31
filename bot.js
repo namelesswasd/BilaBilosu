@@ -1,6 +1,6 @@
 require('dotenv').config();
 
-const {Client, Collection, Intents} = require('discord.js');
+const {Client, Collection, Intents, MessageEmbed} = require('discord.js');
 
 const fs = require('fs');
 const config = require("./config.json");
@@ -28,13 +28,24 @@ let _date = new Date();
 let _time = (IntTwoChars(_date.getHours()) + ":" + IntTwoChars(_date.getMinutes()))
 
 var bilaToggle = 0;
+var devMode = 1;
+
+const devEmbed = new MessageEmbed()
+    .setColor('#ffd500')
+    .addFields(
+        {name: "Nu am putut executa comanda!", value: "Bot-ul este in mentenanta."},
+    )
 
 //delay function
 const delay = (msec) => new Promise((resolve) => setTimeout(resolve, msec));
 
 bot.on('ready', () => {
     bot.user.setStatus('dnd');
-    bot.user.setActivity('Bila Gang.', {type: 'WATCHING'});
+    switch(devMode){
+        case 0: bot.user.setActivity('from above.', {type: 'WATCHING'}); break;
+        case 1: bot.user.setActivity('| MAINTENANCE', {type: 'WATCHING'}); break;
+    }
+    bot.user.setActivity('from above.', {type: 'WATCHING'});
     
     console.log(`${bot.user.tag} s-a logat.`);
 })
@@ -91,23 +102,39 @@ bot.on('message', (message) => {
             }
         }
 
+        if(cmd_name === "devMode"){
+            if(devMode === 0){
+                devMode = 1;
+                bot.user.setActivity('| MAINTENANCE', {type: 'WATCHING'});
+                message.channel.send("Developer mode **ON**.");
+            } else if (devMode === 1){
+                devMode = 0;
+                bot.user.setActivity('from above.', {type: 'WATCHING'});
+                message.channel.send("Developer mode **OFF**.");
+            }
+        }
+
         //command handler
-        if(cmd_name === "answer"){
-            bot.commands.get('answer').execute(message, args);   
-        } else if(cmd_name === "collatz"){
-            bot.commands.get('collatz').execute(message, args);
-        } else if(cmd_name === "input"){
-            bot.commands.get('input').execute(message, args);
-        } else if(cmd_name === "bulkdelete"){
-            bot.commands.get('bulkdelete').execute(message, args);
-        } else if(cmd_name === "mate"){
-            bot.commands.get('mate').execute(message, args);
-        } else if(cmd_name === "play" || cmd_name === "p"){
-            bot.commands.get('play').execute(message, args);
-        } else if(cmd_name === "search" || cmd_name === "s"){
-            bot.commands.get('search').execute(message, args);
-        } else if(cmd_name === "leave"){
-            bot.commands.get('leave').execute(message, args);
+        if((cmd_name && !devMode) || (cmd_name && devMode && message.channel.id === "842493326065139762")){
+            if(cmd_name === "answer"){
+                bot.commands.get('answer').execute(message, args);   
+            } else if(cmd_name === "collatz"){
+                bot.commands.get('collatz').execute(message, args);
+            } else if(cmd_name === "input"){
+                bot.commands.get('input').execute(message, args);
+            } else if(cmd_name === "bulkdelete"){
+                bot.commands.get('bulkdelete').execute(message, args);
+            } else if(cmd_name === "mate"){
+                bot.commands.get('mate').execute(message, args);
+            } else if(cmd_name === "play" || cmd_name === "p"){
+                bot.commands.get('play').execute(message, args);
+            } else if(cmd_name === "search" || cmd_name === "s"){
+                bot.commands.get('search').execute(message, args);
+            } else if(cmd_name === "leave"){
+                bot.commands.get('leave').execute(message, args);
+            }
+        } else {
+            message.reply({embeds: [devEmbed]});
         }
     }
 })

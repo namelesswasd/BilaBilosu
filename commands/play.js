@@ -8,7 +8,6 @@ const {
     createAudioResource,
     joinVoiceChannel,
 } = require('@discordjs/voice');
-const { channel } = require('diagnostics_channel');
 
 const playEmbed = new MessageEmbed()
     .setColor('#00ff2f')

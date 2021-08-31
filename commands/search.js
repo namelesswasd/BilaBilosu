@@ -1,5 +1,6 @@
 const ytSearch = require('yt-search');
-const { MessageEmbed, Collection } = require('discord.js');
+const { MessageEmbed } = require('discord.js');
+const playResult = require('./play');
 
 const searchEmbed = new MessageEmbed()
     .setColor('#00ff2f')
@@ -45,9 +46,15 @@ module.exports = {
         message.channel.send("```stylus\n" + search_out + "^  Selecteaza un videoclip.```");
 
         collector.on('collect', msg => {
+            const result = videoResult.videos[parseInt(msg) - 1].url;
+
+            playResult.execute(message, [result, '']);
+
+            /*
             searchEmbed.fields[0] = {name: "Am cautat:", value: `${videoResult.videos[parseInt(msg) - 1].title}`};
+
             console.log(videoResult.videos[parseInt(msg) - 1]);
-            message.reply({embeds: [searchEmbed]});
+            message.reply({embeds: [searchEmbed]});*/
         })
     }
 }
