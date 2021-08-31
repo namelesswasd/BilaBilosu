@@ -46,6 +46,7 @@ module.exports = {
 
         collector.on('collect', msg => {
             searchEmbed.fields[0] = {name: "Am cautat:", value: `${videoResult.videos[parseInt(msg) - 1].title}`};
+            console.log(videoResult.videos[parseInt(msg) - 1]);
             message.reply({embeds: [searchEmbed]});
         })
     }

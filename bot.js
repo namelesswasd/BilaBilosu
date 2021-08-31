@@ -3,12 +3,13 @@ require('dotenv').config();
 const {Client, Collection, Intents} = require('discord.js');
 
 const fs = require('fs');
+const config = require("./config.json");
 
 const myIntents = new Intents();
 myIntents.add(Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_VOICE_STATES, Intents.FLAGS.GUILD_MEMBERS, Intents.FLAGS.GUILD_BANS, Intents.FLAGS.GUILD_MESSAGES, Intents.FLAGS.GUILD_MESSAGE_REACTIONS, Intents.FLAGS.DIRECT_MESSAGES, Intents.FLAGS.DIRECT_MESSAGE_REACTIONS)
 
 const bot = new Client({ intents: myIntents });
-const prefix = "/";
+const prefix = config.prefix;
 
 bot.commands = new Collection();
 
@@ -135,6 +136,6 @@ bot.on('message', (message) => {
     }
 })
 
-bot.login("NzU2NTAwOTI4MTc3MTExMjEx.X2SwZA.gU_SholB9SV4n1-HlKHrzHK1y8M");
+bot.login(config.token);
 
 //303551762915262466 costi id
