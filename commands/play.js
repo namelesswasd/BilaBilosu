@@ -16,6 +16,13 @@ const playEmbed = new MessageEmbed()
     )
     .setFooter('W.I.P. | Bot-ul poate sa fie instabil.');
 
+const queueEmbed = new MessageEmbed()
+    .setColor('#00ff99')
+    .addFields(
+        {name: 'Am adaugat:', value: '<blank>'},
+    )
+    .setFooter('W.I.P. | Bot-ul poate sa fie instabil.');
+
 const errorEmbed = new MessageEmbed()
     .setColor('#ff0000')
     .addFields(
@@ -23,10 +30,13 @@ const errorEmbed = new MessageEmbed()
     )
     .setFooter('W.I.P. | Bot-ul poate sa fie instabil.');
 
+const queue = new Map();
+
 module.exports = {
     name: 'play',
+    aliases: ['skip', 'stop'],
     description: 'Comanda pentru a reda ceva de pe youtube la bot',
-    async execute(message, args){
+    async execute(message, args, cmd){
         const voiceChannel = message.member.voice.channel;
         const guild = message.guild;
 
@@ -39,37 +49,111 @@ module.exports = {
             errorEmbed.fields[0] = {name: 'Nu am putut sa cant melodia:', value: 'tu nu ai voie boss.\n_(permisiuni insuficiente)_'};
             return message.reply({embeds: [errorEmbed]});
         }
-        if(!args.length) {
-            errorEmbed.fields[0] = {name: 'Nu am putut sa cant melodia:', value: 'ce drq vrei sa iti cant daca nu ai pus nimic?'};
-            return message.reply({embeds: [errorEmbed]});
+
+        const server_queue = queue.get(message.guild.id);
+
+        if(cmd === 'play' || cmd === 'p'){
+            if(!args.length) {
+                errorEmbed.fields[0] = {name: 'Nu am putut sa cant melodia:', value: 'ce drq vrei sa iti cant daca nu ai pus nimic?'};
+                return message.reply({embeds: [errorEmbed]});
+            }
+            let song = {};
+
+            if(ytdl.validateURL(args[0])){
+                const song_info = await ytdl.getInfo(args[0]);
+                song = {title: song_info.videoDetails.title, url: song_info.videoDetails.video_url}
+            } else {
+                const videoFinder = async (query) => {
+                    const videoResult = await ytSearch(query);
+        
+                    return (videoResult.videos.length > 1) ? videoResult.videos[0] : null;
+                }
+        
+                const video = await videoFinder(args.join(' '));
+
+                if(video){
+                    song = {title: video.title, url: video.url};
+                } else {
+                    errorEmbed.fields[0] = {name: 'Nu am putut sa cant melodia:', value: 'nush ce drq mi-ai dat dar nu am gasit'};
+                    message.reply({embeds: [errorEmbed]});
+                }
+            }
+
+            if(!server_queue){
+                const queue_constructor = {
+                    voice_channel: voiceChannel,
+                    text_channel: message.channel,
+                    connection: null,
+                    songs: []
+                }
+    
+                queue.set(message.guild.id, queue_constructor);
+                queue_constructor.songs.push(song);
+    
+                try {
+                    const connection = joinVoiceChannel({
+                        channelId: voiceChannel.id,
+                        guildId: guild.id,
+                        adapterCreator: guild.voiceAdapterCreator,
+                    });
+                    queue_constructor.connection = connection;
+                    video_player(message.guild, queue_constructor.songs[0], message);
+                } catch (err){
+                    queue.delete(message.guild.id);
+                    errorEmbed.fields[0] = {name: 'Nu am putut sa cant melodia:', value: 'nu m-am putut conecta'};
+                    message.reply({embeds: [errorEmbed]});
+                    throw err;
+                }
+            } else {
+                server_queue.songs.push(song);
+                queueEmbed.fields[0] = {name: 'Am adaugat:', value: `${song.title}.`};
+                return message.channel.send({embeds: [queueEmbed]});
+            }
         }
 
-        const connection = joinVoiceChannel({
-            channelId: voiceChannel.id,
-            guildId: guild.id,
-            adapterCreator: guild.voiceAdapterCreator,
-        });
-
-        const videoFinder = async (query) => {
-            const videoResult = await ytSearch(query);
-
-            return (videoResult.videos.length > 1) ? videoResult.videos[0] : null;
+        else if(cmd === 'skip' || cmd === 's') {
+            skip_song(message, server_queue);
+            video_player(message.guild, server_queue.songs[0], message);
         }
-
-        const video = await videoFinder(args.join(' '));
-
-        if(video){
-            const stream = ytdl(video.url, {filter: 'audioonly'});
-            const resource = createAudioResource(stream, { inputType: StreamType.Arbitrary });
-            const player = createAudioPlayer();
-
-            player.play(resource);
-            connection.subscribe(player);
-
-            player.on(AudioPlayerStatus.Idle, () => connection.destroy());
-
-            playEmbed.fields[0] = {name: "Acum cant:", value: video.title};
-            await message.reply({embeds: [playEmbed]});
-        } else message.reply('nush ce drq mi-ai dat dar nu am gasit');
+        else if(cmd === 'stop') {
+            stop_song(message, server_queue);
+            video_player(message.guild, server_queue.songs[0], message);
+        }
     }
+}
+
+const video_player = async (guild, song, message) => {
+    const song_queue = queue.get(guild.id);
+
+    if(!song){
+        song_queue.connection.destroy();
+        queue.delete(guild.id);
+        return;
+    }
+    const stream = ytdl(song.url, {filter: 'audioonly'});
+    const resource = createAudioResource(stream, { inputType: StreamType.Arbitrary });
+    const player = createAudioPlayer();
+
+    player.play(resource);
+    song_queue.connection.subscribe(player);
+    
+    player.on(AudioPlayerStatus.Idle, () => {
+        song_queue.songs.shift();
+        video_player(guild, song_queue.songs[0]);
+    });
+    playEmbed.fields[0] = {name: "Acum cant:", value: song.title};
+    await message.channel.send({embeds: [playEmbed]});
+}
+
+const skip_song = (message, server_queue) => {
+    if(!server_queue){
+        errorEmbed.fields[0] = {name: 'Nu am putut sa cant melodia:', value: 'nu exista melodii in coada.'};
+        return message.reply({embeds: [errorEmbed]});
+    }
+    server_queue.songs.shift();
+
+}
+
+const stop_song = (message, server_queue) => {
+    server_queue.songs = [];
 }

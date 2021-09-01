@@ -20,6 +20,8 @@ for(const file of commandFiles){
     bot.commands.set(command.name, command);
 }
 
+module.exports = bot;
+
 function IntTwoChars(i) {
     return (`0${i}`).slice(-2);
 }
@@ -28,7 +30,7 @@ let _date = new Date();
 let _time = (IntTwoChars(_date.getHours()) + ":" + IntTwoChars(_date.getMinutes()))
 
 var bilaToggle = 0;
-var devMode = 1;
+var devMode = 0;
 
 const devEmbed = new MessageEmbed()
     .setColor('#ffd500')
@@ -126,12 +128,8 @@ bot.on('message', (message) => {
                 bot.commands.get('bulkdelete').execute(message, args);
             } else if(cmd_name === "mate"){
                 bot.commands.get('mate').execute(message, args);
-            } else if(cmd_name === "play" || cmd_name === "p"){
-                bot.commands.get('play').execute(message, args);
-            } else if(cmd_name === "search" || cmd_name === "s"){
-                bot.commands.get('search').execute(message, args);
-            } else if(cmd_name === "leave"){
-                bot.commands.get('leave').execute(message, args);
+            } else if(cmd_name === "play" || cmd_name === "p" || cmd_name === "skip" || cmd_name === "s" || cmd_name === "stop"){
+                bot.commands.get('play').execute(message, args, cmd_name);
             }
         } else {
             message.reply({embeds: [devEmbed]});

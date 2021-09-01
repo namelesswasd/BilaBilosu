@@ -1,13 +1,6 @@
 const ytSearch = require('yt-search');
-const { MessageEmbed } = require('discord.js');
+const { MessageEmbed, MessageActionRow, MessageButton, Interaction, ButtonInteraction } = require('discord.js');
 const playResult = require('./play');
-
-const searchEmbed = new MessageEmbed()
-    .setColor('#00ff2f')
-    .addFields(
-        {name: 'Am selectat', value: '<blank>'},
-    )
-    .setFooter('W.I.P. | Bot-ul poate sa fie instabil.');
 
 const errorEmbed = new MessageEmbed()
     .setColor('#ff0000')
@@ -33,7 +26,7 @@ module.exports = {
 
         const videoResult = await ytSearch(args.join(' '));
 
-        const vids = videoResult.videos.slice(0, 5);
+        const vids = videoResult.videos.slice(0, 10);
         var vid_nr = 0;
         var search_out = '';
         vids.forEach(function (v) {
@@ -41,20 +34,19 @@ module.exports = {
             search_out = search_out.concat(`${vid_nr}. [${v.timestamp}] ${v.title}\n`);
         });
         const filter = m => m.author.id === message.author.id;
-        const collector = message.channel.createMessageCollector({ filter, max: 1, time: 60000});
-        
+
+        const collector = message.channel.createMessageCollector({ filter, max: 1, time: 60000 }) //collector reply
+
         message.channel.send("```stylus\n" + search_out + "^  Selecteaza un videoclip.```");
 
         collector.on('collect', msg => {
-            const result = videoResult.videos[parseInt(msg) - 1].url;
-
-            playResult.execute(message, [result, '']);
-
-            /*
-            searchEmbed.fields[0] = {name: "Am cautat:", value: `${videoResult.videos[parseInt(msg) - 1].title}`};
-
-            console.log(videoResult.videos[parseInt(msg) - 1]);
-            message.reply({embeds: [searchEmbed]});*/
-        })
+            if(isNaN(parseInt(msg))) {
+                errorEmbed.fields[0] = {name: 'Nu am putut sa caut:', value: 'Nu ai introdus un numar, anulez cautarea...'};
+                message.reply({embeds: [errorEmbed]});
+            } else {
+                const result = videoResult.videos[parseInt(msg) - 1].url;
+                playResult.execute(message, [result, ''], 'p');
+            }
+        });
     }
 }
