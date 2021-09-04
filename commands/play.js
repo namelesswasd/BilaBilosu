@@ -8,6 +8,7 @@ const {
     createAudioResource,
     joinVoiceChannel,
 } = require('@discordjs/voice');
+const queueOutput = require('./queue.js');
 
 const playEmbed = new MessageEmbed()
     .setColor('#00ff2f')
@@ -34,7 +35,7 @@ const queue = new Map();
 
 module.exports = {
     name: 'play',
-    aliases: ['skip', 'stop'],
+    aliases: ['skip', 's', 'stop', 'queue'],
     description: 'Comanda pentru a reda ceva de pe youtube la bot',
     async execute(message, args, cmd){
         const voiceChannel = message.member.voice.channel;
@@ -61,7 +62,7 @@ module.exports = {
 
             if(ytdl.validateURL(args[0])){
                 const song_info = await ytdl.getInfo(args[0]);
-                song = {title: song_info.videoDetails.title, url: song_info.videoDetails.video_url}
+                song = {title: song_info.videoDetails.title, url: song_info.videoDetails.video_url, author: song_info.videoDetails.ownerChannelName, length: `${song_info.videoDetails.lengthSeconds} seconds`};
             } else {
                 const videoFinder = async (query) => {
                     const videoResult = await ytSearch(query);
@@ -72,7 +73,7 @@ module.exports = {
                 const video = await videoFinder(args.join(' '));
 
                 if(video){
-                    song = {title: video.title, url: video.url};
+                    song = {title: video.title, url: video.url, author: video.author.name, timestamp: video.timestamp};
                 } else {
                     errorEmbed.fields[0] = {name: 'Nu am putut sa cant melodia:', value: 'nush ce drq mi-ai dat dar nu am gasit'};
                     message.reply({embeds: [errorEmbed]});
@@ -106,7 +107,7 @@ module.exports = {
                 }
             } else {
                 server_queue.songs.push(song);
-                queueEmbed.fields[0] = {name: 'Am adaugat:', value: `${song.title}.`};
+                queueEmbed.fields[0] = {name: 'Am adaugat:', value: `${song.title}.\nde **${song.author}** _(${song.timestamp})_`};
                 return message.channel.send({embeds: [queueEmbed]});
             }
         }
@@ -118,6 +119,9 @@ module.exports = {
         else if(cmd === 'stop') {
             stop_song(message, server_queue);
             video_player(message.guild, server_queue.songs[0], message);
+        }
+        else if(cmd === 'queue'){
+            queueOutput.execute(queue, guild, message);
         }
     }
 }
@@ -134,26 +138,35 @@ const video_player = async (guild, song, message) => {
     const resource = createAudioResource(stream, { inputType: StreamType.Arbitrary });
     const player = createAudioPlayer();
 
-    player.play(resource);
-    song_queue.connection.subscribe(player);
+    await player.play(resource);
+    await song_queue.connection.subscribe(player);
     
     player.on(AudioPlayerStatus.Idle, () => {
         song_queue.songs.shift();
-        video_player(guild, song_queue.songs[0]);
+        video_player(guild, song_queue.songs[0], message);
     });
-    playEmbed.fields[0] = {name: "Acum cant:", value: song.title};
+
+    player.on('error', error => {
+        console.error(error);
+        song_queue.connection.destroy();
+        queue.delete(guild.id);
+        errorEmbed.fields[0] = {name: 'Nu am putut sa cant melodia:', value: 'eroare necunoscuta.'};
+        return message.reply({embeds: [errorEmbed]});
+    })
+    playEmbed.fields[0] = {name: "Acum cant:", value: `${song.title}\nde **${song.author}** _(${song.timestamp})_.`};
     await message.channel.send({embeds: [playEmbed]});
 }
 
-const skip_song = (message, server_queue) => {
+const skip_song = async (message, server_queue) => {
     if(!server_queue){
         errorEmbed.fields[0] = {name: 'Nu am putut sa cant melodia:', value: 'nu exista melodii in coada.'};
         return message.reply({embeds: [errorEmbed]});
     }
     server_queue.songs.shift();
-
 }
 
-const stop_song = (message, server_queue) => {
+const stop_song = async (message, server_queue) => {
     server_queue.songs = [];
+    queueEmbed.fields[0] = {name: 'Am iesit din canal.', value: ''};
+    message.channel.send({embeds: [queueEmbed]});
 }

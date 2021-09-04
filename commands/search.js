@@ -2,6 +2,13 @@ const ytSearch = require('yt-search');
 const { MessageEmbed, MessageActionRow, MessageButton, Interaction, ButtonInteraction } = require('discord.js');
 const playResult = require('./play');
 
+const searchEmbed = new MessageEmbed()
+    .setColor('#00ff99')
+    .addFields(
+        {name: 'Coada:', value: '<blank>'},
+    )
+    .setFooter('W.I.P. | Bot-ul poate sa fie instabil.');
+
 const errorEmbed = new MessageEmbed()
     .setColor('#ff0000')
     .addFields(
@@ -37,7 +44,8 @@ module.exports = {
 
         const collector = message.channel.createMessageCollector({ filter, max: 1, time: 60000 }) //collector reply
 
-        message.channel.send("```stylus\n" + search_out + "^  Selecteaza un videoclip.```");
+        searchEmbed.fields[0] = {name: 'Rezultatele cautarii:', value: "```stylus\n" + search_out + "^  Selecteaza un videoclip.```"};
+        message.channel.send({embeds: [searchEmbed]});
 
         collector.on('collect', msg => {
             if(isNaN(parseInt(msg))) {
@@ -45,7 +53,7 @@ module.exports = {
                 message.reply({embeds: [errorEmbed]});
             } else {
                 const result = videoResult.videos[parseInt(msg) - 1].url;
-                playResult.execute(message, [result, ''], 'p');
+                playResult.execute(message, [result, ''], 'play');
             }
         });
     }
