@@ -33,6 +33,8 @@ const errorEmbed = new MessageEmbed()
 
 const queue = new Map();
 
+
+
 module.exports = {
     name: 'play',
     aliases: ['skip', 's', 'stop', 'queue'],
@@ -62,7 +64,11 @@ module.exports = {
 
             if(ytdl.validateURL(args[0])){
                 const song_info = await ytdl.getInfo(args[0]);
-                song = {title: song_info.videoDetails.title, url: song_info.videoDetails.video_url, author: song_info.videoDetails.ownerChannelName, length: `${song_info.videoDetails.lengthSeconds} seconds`};
+                var song_length = song_info.videoDetails.lengthSeconds;
+
+                var song_timestamp = `${song_length / 60}:${song_length % 60}`;
+
+                song = {title: song_info.videoDetails.title, url: song_info.videoDetails.video_url, author: song_info.videoDetails.ownerChannelName, length: song_timestamp};
             } else {
                 const videoFinder = async (query) => {
                     const videoResult = await ytSearch(query);
@@ -167,6 +173,6 @@ const skip_song = async (message, server_queue) => {
 
 const stop_song = async (message, server_queue) => {
     server_queue.songs = [];
-    queueEmbed.fields[0] = {name: 'Am iesit din canal.', value: ''};
+    queueEmbed.fields[0] = {name: 'Am iesit din canal.', value: 'muvex'};
     message.channel.send({embeds: [queueEmbed]});
 }

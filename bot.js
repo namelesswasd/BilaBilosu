@@ -3,13 +3,14 @@ require('dotenv').config();
 const {Client, Collection, Intents, MessageEmbed} = require('discord.js');
 
 const fs = require('fs');
-//const config = require("./config.json");
+const config = require("./config.json");
+const prefix = '//';
+//const prefix = config.prefix;
 
 const myIntents = new Intents();
 myIntents.add(Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_VOICE_STATES, Intents.FLAGS.GUILD_MEMBERS, Intents.FLAGS.GUILD_BANS, Intents.FLAGS.GUILD_MESSAGES, Intents.FLAGS.GUILD_MESSAGE_REACTIONS, Intents.FLAGS.DIRECT_MESSAGES, Intents.FLAGS.DIRECT_MESSAGE_REACTIONS)
 
 const bot = new Client({ intents: myIntents });
-const prefix = '//';
 
 bot.commands = new Collection();
 
@@ -132,6 +133,8 @@ bot.on('message', (message) => {
                 bot.commands.get('play').execute(message, args, cmd_name);
             } else if(cmd_name === "search"){
                 bot.commands.get('search').execute(message, args);
+            } else if(cmd_name === "serverage"){
+                bot.commands.get('serverage').execute(message);
             }
         } else {
             message.reply({embeds: [devEmbed]});
@@ -151,6 +154,8 @@ bot.on('message', (message) => {
         if(message.channel.id !== "648219216456974336"){
             bot.commands.get('musicWrongChannel').execute(message, null);
         }
+    } else if(message.content.toLowerCase().startsWith('bila,')){
+        bot.commands.get('8ball').execute(message, null);
     }
 })
 
@@ -163,6 +168,7 @@ bot.on('message', (message) => {
     }
 })
 
-bot.login(process.env.TOKEN);
+//bot.login(process.env.TOKEN);
+bot.login(config.token);
 
 //303551762915262466 costi id

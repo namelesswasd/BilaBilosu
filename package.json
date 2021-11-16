@@ -19,8 +19,8 @@
     "dotenv": "^10.0.0",
     "ffmpeg-static": "^4.4.0",
     "libsodium-wrappers": "^0.7.9",
-    "node": "16.6.1",
-    "node-addon-api": "^4.1.0",
+    "node": "^16.9.1",
+    "node-addon-api": "^4.2.0",
     "yt-search": "^2.10.1",
     "ytdl-core": "^4.9.1"
   }
