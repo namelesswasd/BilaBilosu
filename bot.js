@@ -168,7 +168,7 @@ bot.on('message', (message) => {
     }
 })
 
-//bot.login(process.env.TOKEN);
-bot.login(config.token);
+bot.login(process.env.TOKEN);
+//bot.login(config.token);
 
 //303551762915262466 costi id
