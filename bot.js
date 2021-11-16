@@ -3,7 +3,8 @@ require('dotenv').config();
 const {Client, Collection, Intents, MessageEmbed} = require('discord.js');
 
 const fs = require('fs');
-const config = require("./config.json");
+//const config = require("./config.json");
+
 const prefix = '//';
 //const prefix = config.prefix;
 
