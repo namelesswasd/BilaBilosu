@@ -5,7 +5,7 @@ const {Client, Collection, Intents, MessageEmbed} = require('discord.js');
 const fs = require('fs');
 const prefix = '//';
 
-const config = require("./config.json");
+//const config = require("./config.json");
 //const prefix = config.prefix;
 
 const myIntents = new Intents();
@@ -176,5 +176,5 @@ bot.on('message', (message) => {
     }
 })
 
-//bot.login(process.env.TOKEN);
-bot.login(config.token);
+bot.login(process.env.TOKEN);
+//bot.login(config.token);
