@@ -3,13 +3,20 @@ require('dotenv').config();
 const {Client, Collection, Intents, MessageEmbed} = require('discord.js');
 
 const fs = require('fs');
-//const config = require("./config.json");
-
 const prefix = '//';
+
+const config = require("./config.json");
 //const prefix = config.prefix;
 
 const myIntents = new Intents();
-myIntents.add(Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_VOICE_STATES, Intents.FLAGS.GUILD_MEMBERS, Intents.FLAGS.GUILD_BANS, Intents.FLAGS.GUILD_MESSAGES, Intents.FLAGS.GUILD_MESSAGE_REACTIONS, Intents.FLAGS.DIRECT_MESSAGES, Intents.FLAGS.DIRECT_MESSAGE_REACTIONS)
+myIntents.add(Intents.FLAGS.GUILDS, 
+              Intents.FLAGS.GUILD_VOICE_STATES, 
+              Intents.FLAGS.GUILD_MEMBERS, 
+              Intents.FLAGS.GUILD_BANS, 
+              Intents.FLAGS.GUILD_MESSAGES, 
+              Intents.FLAGS.GUILD_MESSAGE_REACTIONS,
+              Intents.FLAGS.DIRECT_MESSAGES, 
+              Intents.FLAGS.DIRECT_MESSAGE_REACTIONS);
 
 const bot = new Client({ intents: myIntents });
 
@@ -130,7 +137,7 @@ bot.on('message', (message) => {
                 bot.commands.get('bulkdelete').execute(message, args);
             } else if(cmd_name === "mate"){
                 bot.commands.get('mate').execute(message, args);
-            } else if(cmd_name === "play" || cmd_name === "p" || cmd_name === "skip" || cmd_name === "s" || cmd_name === "stop" || cmd_name === "queue"){
+            } else if(cmd_name === "play" || cmd_name === "p" || cmd_name === "skip" || cmd_name === "s" || cmd_name === "stop" || cmd_name === "queue" || cmd_name === "loop"){
                 bot.commands.get('play').execute(message, args, cmd_name);
             } else if(cmd_name === "search"){
                 bot.commands.get('search').execute(message, args);
@@ -169,7 +176,5 @@ bot.on('message', (message) => {
     }
 })
 
-bot.login(process.env.TOKEN);
-//bot.login(config.token);
-
-//303551762915262466 costi id
+//bot.login(process.env.TOKEN);
+bot.login(config.token);

@@ -33,7 +33,7 @@ const errorEmbed = new MessageEmbed()
 
 const queue = new Map();
 
-
+var isLooping = false;
 
 module.exports = {
     name: 'play',
@@ -118,6 +118,17 @@ module.exports = {
             }
         }
 
+        else if(cmd === 'loop'){
+            if(!isLooping) {
+                isLooping = 1;
+                queueEmbed.fields[0] = {name: '*Loop:*', value: 'Coada se va repeta.'};
+                message.channel.send({embeds: [queueEmbed]});
+            } else {
+                isLooping = 0;
+                queueEmbed.fields[0] = {name: '*Loop:*', value: 'Coada _nu_ se va mai repeta.'};
+                message.channel.send({embeds: [queueEmbed]});
+            }
+        }
         else if(cmd === 'skip' || cmd === 's') {
             skip_song(message, server_queue);
             video_player(message.guild, server_queue.songs[0], message);
@@ -136,8 +147,8 @@ const video_player = async (guild, song, message) => {
     const song_queue = queue.get(guild.id);
 
     if(!song){
-        song_queue.connection.destroy();
         queue.delete(guild.id);
+        song_queue.connection.destroy();
         return;
     }
     const stream = ytdl(song.url, {filter: 'audioonly'});
@@ -148,7 +159,11 @@ const video_player = async (guild, song, message) => {
     await song_queue.connection.subscribe(player);
     
     player.on(AudioPlayerStatus.Idle, () => {
-        song_queue.songs.shift();
+        if(isLooping){
+            song_queue.songs.push(song_queue.songs[0]);
+            song_queue.songs.shift();
+        }
+        else song_queue.songs.shift();
         video_player(guild, song_queue.songs[0], message);
     });
 
@@ -167,8 +182,8 @@ const skip_song = async (message, server_queue) => {
     if(!server_queue){
         errorEmbed.fields[0] = {name: 'Nu am putut sa cant melodia:', value: 'nu exista melodii in coada.'};
         return message.reply({embeds: [errorEmbed]});
-    }
-    server_queue.songs.shift();
+    } else server_queue.songs.shift();
+
 }
 
 const stop_song = async (message, server_queue) => {
