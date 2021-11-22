@@ -9,14 +9,7 @@ const prefix = '//';
 //const prefix = config.prefix;
 
 const myIntents = new Intents();
-myIntents.add(Intents.FLAGS.GUILDS, 
-              Intents.FLAGS.GUILD_VOICE_STATES, 
-              Intents.FLAGS.GUILD_MEMBERS, 
-              Intents.FLAGS.GUILD_BANS, 
-              Intents.FLAGS.GUILD_MESSAGES, 
-              Intents.FLAGS.GUILD_MESSAGE_REACTIONS,
-              Intents.FLAGS.DIRECT_MESSAGES, 
-              Intents.FLAGS.DIRECT_MESSAGE_REACTIONS);
+myIntents.add(Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_VOICE_STATES, Intents.FLAGS.GUILD_MEMBERS, Intents.FLAGS.GUILD_BANS, Intents.FLAGS.GUILD_MESSAGES, Intents.FLAGS.GUILD_MESSAGE_REACTIONS,Intents.FLAGS.DIRECT_MESSAGES, Intents.FLAGS.DIRECT_MESSAGE_REACTIONS);
 
 const bot = new Client({ intents: myIntents });
 
