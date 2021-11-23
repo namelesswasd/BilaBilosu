@@ -169,7 +169,6 @@ const video_player = async (guild, song, message) => {
 
     player.on('error', error => {
         console.error(error);
-        song_queue.connection.destroy();
         queue.delete(guild.id);
         errorEmbed.fields[0] = {name: 'Nu am putut sa cant melodia:', value: 'eroare necunoscuta.'};
         return message.reply({embeds: [errorEmbed]});

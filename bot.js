@@ -56,13 +56,7 @@ bot.on('ready', () => {
 
 //on join
 bot.once('guildMemberAdd', async member => {
-    if(member.user.bot) member.kick();
-
-    if(member.user.id === "303551762915262466"){
-        member.send("𝕭𝖆𝖘𝖙𝖆 𝖉𝖊 𝖆𝖎𝖈𝖎 :smiling_face_with_3_hearts:").catch();
-        await delay(1000);
-        member.kick();
-    }
+    
 })
 
 //COMMANDS
