@@ -113,7 +113,7 @@ module.exports = {
                 }
             } else {
                 server_queue.songs.push(song);
-                queueEmbed.fields[0] = {name: 'Am adaugat:', value: `${song.title}.\nde **${song.author}** _(${song.timestamp})_`};
+                queueEmbed.fields[0] = {name: 'Am adaugat:', value: `[${song.title}](${song.url}).\nde **${song.author}** _(${song.timestamp})_`};
                 return message.channel.send({embeds: [queueEmbed]});
             }
         }
@@ -173,7 +173,7 @@ const video_player = async (guild, song, message) => {
         errorEmbed.fields[0] = {name: 'Nu am putut sa cant melodia:', value: 'eroare necunoscuta.'};
         return message.reply({embeds: [errorEmbed]});
     })
-    playEmbed.fields[0] = {name: "Acum cant:", value: `${song.title}\nde **${song.author}** _(${song.timestamp})_.`};
+    playEmbed.fields[0] = {name: "Acum cant:", value: `[${song.title}](${song.url})\nde **${song.author}** _(${song.timestamp})_.`};
     await message.channel.send({embeds: [playEmbed]});
 }
 
