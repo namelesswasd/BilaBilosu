@@ -57,13 +57,13 @@ bot.on('ready', () => {
 
 //on join
 bot.once('guildMemberAdd', member => {
-    channel = member.guild.channels.cache.get('625340754839207955');
+    var channel = member.guild.channels.cache.get('625340754839207955');
     channel.send(`${member.displayName} a intrat pe server.`);
 })
 
 //on leave
 bot.once('guildMemberRemove', member => {
-    channel = member.guild.channels.cache.get('625340754839207955');
+    var channel = member.guild.channels.cache.get('625340754839207955');
     channel.send(`${member.displayName} a iesit de pe server.`);
 })
 
