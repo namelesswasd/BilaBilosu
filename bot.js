@@ -55,8 +55,13 @@ bot.on('ready', () => {
 })
 
 //on join
-bot.once('guildMemberAdd', async member => {
-    
+bot.once('guildMemberAdd', member => {
+    member.guild.channels.get('625340754839207955').send(`${member.nickname} a intrat pe server.`);
+})
+
+//on leave
+bot.once('guildMemberRemove', member => {
+    member.guild.channels.get('625340754839207955').send(`${member.nickname} a iesit de pe server.`);
 })
 
 //COMMANDS
