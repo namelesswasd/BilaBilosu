@@ -64,6 +64,7 @@ module.exports = {
 
             if(ytdl.validateURL(args[0])){
                 const song_info = await ytdl.getInfo(args[0]);
+                console.log(song_info);
                 var song_length = song_info.videoDetails.lengthSeconds;
 
                 var song_timestamp = `${song_length / 60}:${song_length % 60}`;
