@@ -6,7 +6,7 @@ const {Client, Collection, Intents, MessageEmbed} = require('discord.js');
 const fs = require('fs');
 const prefix = '//';
 
-const config = require("./config.json");
+//const config = require("./config.json");
 //const prefix = config.prefix;
 
 const myIntents = new Intents();
