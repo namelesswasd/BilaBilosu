@@ -18,7 +18,7 @@ const errorEmbed = new MessageEmbed()
 
 module.exports = {
     name: 'search',
-    description: 'comanda care cauta rezultate de pe YouTube.',
+    description: 'COMANDA | Comanda care cauta rezultate de pe YouTube.',
     async execute(message, args){
         const voiceChannel = message.member.voice.channel;
 

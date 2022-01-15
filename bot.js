@@ -97,8 +97,8 @@ bot.on('message', (message) => {
             .substring(prefix.length)
             .split(/\s+/);
 
-        //Bila speaks for nlx toggle
-        if (cmd_name === "bilaToggle"){ //vb eu in locul botului
+        //Bila speaks for me toggle
+        if(cmd_name === "bilaToggle" && message.author.id === "208918353845288960"){
             if(bilaToggle === 0){
                 bilaToggle = 1;
                 message.channel.send("Bila mode **ON**.");
@@ -106,9 +106,7 @@ bot.on('message', (message) => {
                 bilaToggle = 0;
                 message.channel.send("Bila mode **OFF**.")
             }
-        }
-
-        if(cmd_name === "devMode"){
+        } else if(cmd_name === "maintenance" && message.author.id === "208918353845288960"){
             if(devMode === 0){
                 devMode = 1;
                 bot.user.setActivity('| MAINTENANCE', {type: 'WATCHING'});
@@ -118,12 +116,15 @@ bot.on('message', (message) => {
                 bot.user.setActivity('from above.', {type: 'WATCHING'});
                 message.channel.send("Developer mode **OFF**.");
             }
+        } else if(bot.commands.get(`${cmd_name}`) === undefined){ //reworked command handler
+            message.reply('Introduce o comanda valida.');
+        } else { 
+            if((cmd_name && !devMode) || (cmd_name && devMode && (message.channel.id === "842493326065139762" || message.channel.id === "648219216456974336"))){
+                if(cmd_name === "play" || cmd_name === "p" || cmd_name === "skip" || cmd_name === "s" || cmd_name === "search" || cmd_name === "stop" || cmd_name === "queue" || cmd_name === "loop"){
+                    bot.commands.get('play').execute(message, args, cmd_name);
+                } else bot.commands.get(`${cmd_name}`).execute(message, args);
+            } else message.reply({embeds: [devEmbed]});
         }
-
-        //reworked command handler
-        if((cmd_name && !devMode) || (cmd_name && devMode && (message.channel.id === "842493326065139762" || message.channel.id === "648219216456974336"))){
-            bot.commands.get(`${cmd_name}`).execute(message, args, cmd_name);
-        } else message.reply({embeds: [devEmbed]});
     }
 })
 
@@ -135,10 +136,6 @@ bot.on('message', (message) => {
         bot.commands.get('ping').execute(message, null);
     } else if(message.content === 'Fornetti' || message.content === 'fornetti'){
         bot.commands.get('fornetti').execute(message, null);
-    } else if(message.content.startsWith("-p") || message.content.startsWith("-play") || message.content.startsWith("-search")){
-        if(message.channel.id !== "648219216456974336"){
-            bot.commands.get('musicWrongChannel').execute(message, null);
-        }
     } else if(message.content.toLowerCase().startsWith('bila,')){
         bot.commands.get('8ball').execute(message, null);
     }
@@ -153,5 +150,5 @@ bot.on('message', (message) => {
     }
 })
 
-//bot.login(process.env.TOKEN);
-bot.login(config.token);
+bot.login(process.env.TOKEN);
+//bot.login(config.token);

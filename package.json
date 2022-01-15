@@ -4,7 +4,7 @@
   "description": "Un bot de Discord folosit in server-ul Bila Gang",
   "main": "bot.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "nodemon bot.js"
   },
   "engines": {
     "node": "16.x",
@@ -15,13 +15,17 @@
   "dependencies": {
     "@discordjs/opus": "^0.6.0",
     "@discordjs/voice": "^0.6.0",
+    "axios": "^0.24.0",
+    "cheerio": "^1.0.0-rc.10",
     "discord.js": "^13.1.0",
     "dotenv": "^10.0.0",
+    "express": "^4.17.2",
     "ffmpeg-static": "^4.4.0",
     "libsodium-wrappers": "^0.7.9",
     "node": "^16.9.1",
     "node-addon-api": "^4.2.0",
+    "nodemon": "^2.0.15",
     "yt-search": "^2.10.1",
-    "ytdl-core": "^4.9.2"
+    "ytdl-core": "^4.10.0"
   }
 }

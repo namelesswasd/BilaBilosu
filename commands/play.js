@@ -38,7 +38,7 @@ var isLooping = false;
 module.exports = {
     name: 'play',
     aliases: ['skip', 's', 'stop', 'queue'],
-    description: 'Comanda pentru a reda ceva de pe youtube la bot',
+    description: 'COMANDA | Comanda pentru a reda ceva de pe youtube la bot',
     async execute(message, args, cmd){
         const voiceChannel = message.member.voice.channel;
         const guild = message.guild;

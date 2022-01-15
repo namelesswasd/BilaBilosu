@@ -6,7 +6,7 @@ var colhigh = 0;
 
 module.exports = {
     name: 'collatz',
-    description: 'un algoritm misto',
+    description: 'COMANDA | Un algoritm misto',
     execute(message, args){
         if(!args[0]){
             message.reply("te rog pune un numar.")

@@ -1,6 +1,6 @@
 module.exports = {
     name: 'bulkdelete',
-    description: 'o comanda pentru a sterge mai multe mesaje',
+    description: 'COMANDA | O comanda pentru a sterge mai multe mesaje',
     execute(message, args){
         if(message.author.id === "208918353845288960"){
             if(!args[0]){
