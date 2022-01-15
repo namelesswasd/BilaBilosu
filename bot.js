@@ -116,15 +116,15 @@ bot.on('message', (message) => {
                 bot.user.setActivity('from above.', {type: 'WATCHING'});
                 message.channel.send("Developer mode **OFF**.");
             }
-        } else if(bot.commands.get(`${cmd_name}`) === undefined){ //reworked command handler
-            message.reply('Introduce o comanda valida.');
-        } else { 
-            if((cmd_name && !devMode) || (cmd_name && devMode && (message.channel.id === "842493326065139762" || message.channel.id === "648219216456974336"))){
+        } else if((cmd_name && !devMode) || (cmd_name && devMode && (message.channel.id === "842493326065139762" || message.channel.id === "648219216456974336"))){
                 if(cmd_name === "play" || cmd_name === "p" || cmd_name === "skip" || cmd_name === "s" || cmd_name === "search" || cmd_name === "stop" || cmd_name === "queue" || cmd_name === "loop"){
                     bot.commands.get('play').execute(message, args, cmd_name);
                 } else bot.commands.get(`${cmd_name}`).execute(message, args);
             } else message.reply({embeds: [devEmbed]});
-        }
+        } else if(bot.commands.get(`${cmd_name}`) === undefined){ //reworked command handler
+            message.reply('Introduce o comanda valida.');
+        } else {
+            message.reply('Eroare necunoscuta.');
     }
 })
 
