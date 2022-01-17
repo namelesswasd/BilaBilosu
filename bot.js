@@ -121,11 +121,9 @@ bot.on('message', (message) => {
                     bot.commands.get('play').execute(message, args, cmd_name);
                 } else bot.commands.get(`${cmd_name}`).execute(message, args);
             } else message.reply({embeds: [devEmbed]});
-        } else if(bot.commands.get(`${cmd_name}`) === undefined){ //reworked command handler
-            message.reply('Introduce o comanda valida.');
         } else {
-            message.reply('Eroare necunoscuta.');
-    }
+            message.reply('Comanda necunoscuta.');
+        }
 })
 
 //REPLIES
