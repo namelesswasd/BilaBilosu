@@ -121,8 +121,6 @@ bot.on('message', (message) => {
                     bot.commands.get('play').execute(message, args, cmd_name);
                 } else bot.commands.get(`${cmd_name}`).execute(message, args);
             } else message.reply({embeds: [devEmbed]});
-        } else {
-            message.reply('Comanda necunoscuta.');
         }
 })
 
