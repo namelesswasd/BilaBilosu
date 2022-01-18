@@ -1,12 +1,13 @@
+const play = require('play-dl');
 const ytdl = require('ytdl-core');
 const ytSearch = require('yt-search');
 const { MessageEmbed } = require('discord.js');
 const {
     AudioPlayerStatus,
-    StreamType,
     createAudioPlayer,
     createAudioResource,
     joinVoiceChannel,
+    NoSubscriberBehavior,
 } = require('@discordjs/voice');
 const queueOutput = require('./queue.js');
 
@@ -15,21 +16,21 @@ const playEmbed = new MessageEmbed()
     .addFields(
         {name: 'Acum cant:', value: '<blank>'},
     )
-    .setFooter('W.I.P. | Bot-ul poate sa fie instabil.');
+    .setFooter('W.I.P. | NU MAI DA CRASH BOT-UL!!! (cred, sper, dmn ajuta)');
 
 const queueEmbed = new MessageEmbed()
     .setColor('#00ff99')
     .addFields(
         {name: 'Am adaugat:', value: '<blank>'},
     )
-    .setFooter('W.I.P. | Bot-ul poate sa fie instabil.');
+    .setFooter('W.I.P. | NU MAI DA CRASH BOT-UL!!! (cred, sper, dmn ajuta)');
 
 const errorEmbed = new MessageEmbed()
     .setColor('#ff0000')
     .addFields(
         {name: 'Nu am putut sa cant melodia:', value: '<blank>'},
     )
-    .setFooter('W.I.P. | Bot-ul poate sa fie instabil.');
+    .setFooter('W.I.P. | NU MAI DA CRASH BOT-UL!!! (cred, sper, dmn ajuta)');
 
 const queue = new Map();
 
@@ -152,15 +153,19 @@ const video_player = async (guild, song, message) => {
         song_queue.connection.destroy();
         return;
     }
-    const stream = ytdl(song.url, {filter: 'audioonly'});
-    const resource = createAudioResource(stream, { inputType: StreamType.Arbitrary });
-    const player = createAudioPlayer();
+
+    let stream = await play.stream(song.url);
+    let resource = createAudioResource(stream.stream, {
+        inputType: stream.type 
+    });
+    let player = createAudioPlayer({
+        behaviors: {
+            noSubscriber: NoSubscriberBehavior.Play
+        }
+    });
 
     await player.play(resource);
-    if(song_queue.connection === undefined) {
-        song_queue.songs = [];
-        video_player(guild, song_queue.songs[0], message);
-    } else await song_queue.connection.subscribe(player);
+    await song_queue.connection.subscribe(player);
     
     player.on(AudioPlayerStatus.Idle, () => {
         if(isLooping){
