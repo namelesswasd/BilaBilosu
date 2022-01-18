@@ -157,7 +157,10 @@ const video_player = async (guild, song, message) => {
     const player = createAudioPlayer();
 
     await player.play(resource);
-    await song_queue.connection.subscribe(player);
+    if(song_queue.connection === undefined) {
+        song_queue.songs = [];
+        video_player(guild, song_queue.songs[0], message);
+    } else await song_queue.connection.subscribe(player);
     
     player.on(AudioPlayerStatus.Idle, () => {
         if(isLooping){
