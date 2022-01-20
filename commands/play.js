@@ -16,25 +16,38 @@ const playEmbed = new MessageEmbed()
     .addFields(
         {name: 'Acum cant:', value: '<blank>'},
     )
-    .setFooter('W.I.P. | NU MAI DA CRASH BOT-UL!!! (cred, sper, dmn ajuta)');
+    .setFooter('Work in progress.');
 
 const queueEmbed = new MessageEmbed()
     .setColor('#00ff99')
     .addFields(
         {name: 'Am adaugat:', value: '<blank>'},
     )
-    .setFooter('W.I.P. | NU MAI DA CRASH BOT-UL!!! (cred, sper, dmn ajuta)');
+    .setFooter('Work in progress.');
 
 const errorEmbed = new MessageEmbed()
     .setColor('#ff0000')
     .addFields(
         {name: 'Nu am putut sa cant melodia:', value: '<blank>'},
     )
-    .setFooter('W.I.P. | NU MAI DA CRASH BOT-UL!!! (cred, sper, dmn ajuta)');
+    .setFooter('Work in progress.');
 
 const queue = new Map();
 
 var isLooping = false;
+
+function round(value, precision) {
+    var multiplier = Math.pow(10, precision || 0);
+    return Math.round(value * multiplier) / multiplier;
+}
+function timestampGenerator(x){
+    if(x > 3600) {
+        if((x - 3600) / 60 < 10) return `${round(x / 3600, 0)}:0${round((x - 3600) / 60, 0)}:${x % 60}`;
+        else return `${round(x / 3600, 0)}:${round((x - 3600) / 60, 0)}:${x % 60}`;
+    }
+    else if(x > 60) return `${round(x / 60, 0)}:${x % 60}`;
+    else return `0:${x}`;
+}
 
 module.exports = {
     name: 'play',
@@ -65,13 +78,13 @@ module.exports = {
 
             if(ytdl.validateURL(args[0])){
                 const song_info = await ytdl.getInfo(args[0]);
-                
-                //console.log(song_info);
-                var song_length = song_info.player_response.videoDetails.lengthSeconds;
 
-                var song_timestamp = `${parseInt(song_length / 60)}:${song_length % 60}`;
-
-                song = {title: song_info.videoDetails.title, url: song_info.videoDetails.video_url, author: song_info.videoDetails.ownerChannelName, timestamp: song_timestamp};
+                song = {
+                    title: song_info.videoDetails.title, 
+                    url: song_info.videoDetails.video_url, 
+                    author: song_info.videoDetails.ownerChannelName, 
+                    timestamp: timestampGenerator(song_info.player_response.videoDetails.lengthSeconds),
+                };
             } else {
                 const videoFinder = async (query) => {
                     const videoResult = await ytSearch(query);
