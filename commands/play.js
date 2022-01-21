@@ -186,7 +186,11 @@ const video_player = async (guild, song, message) => {
     await player.play(resource);
     await song_queue.connection.subscribe(player);
     
+    playEmbed.fields[0] = {name: "Acum cant:", value: `[${song.title}](${song.url})\nde **${song.author}** _(${song.timestamp})_.`};
+    let msg = await message.channel.send({embeds: [playEmbed]});
+
     player.on(AudioPlayerStatus.Idle, () => {
+        msg.delete();
         if(isLooping){
             song_queue.songs.push(song_queue.songs[0]);
             song_queue.songs.shift();
@@ -201,8 +205,7 @@ const video_player = async (guild, song, message) => {
         errorEmbed.fields[0] = {name: 'Nu am putut sa cant melodia:', value: 'eroare necunoscuta.'};
         return message.reply({embeds: [errorEmbed]});
     })
-    playEmbed.fields[0] = {name: "Acum cant:", value: `[${song.title}](${song.url})\nde **${song.author}** _(${song.timestamp})_.`};
-    await message.channel.send({embeds: [playEmbed]});
+    
 }
 
 const skip_song = async (message, server_queue) => {

@@ -142,7 +142,7 @@ bot.on('message', (message) => {
     }
 })
 
-bot.login(process.env.TOKEN);
+//bot.login(process.env.TOKEN);
 
-//const config = require("./config.json");
-//bot.login(config.token);
+const config = require("./config.json");
+bot.login(config.token);
