@@ -1,6 +1,7 @@
 module.exports = {
     name: 'mate',
-    description: 'COMANDA | Bila face matematica',
+    type: 'command',
+    description: 'Bila face matematica',
     execute(message, args){
         var _x = args[0];
             var _y = args[2];

@@ -17,7 +17,8 @@ const errEmbed = new MessageEmbed()
 
 module.exports = {
     name: 'weather',
-    description: 'COMANDA | Comanda pentru a arata vremea din Romania',
+    type: 'command',
+    description: 'Comanda pentru a arata vremea din Romania',
     execute(message, args){
         if(!args[0] || !args[1]){
             errEmbed.title = 'Nu am putut executa comanda:';

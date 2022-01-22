@@ -3,7 +3,8 @@ const { MessageEmbed } = require('discord.js');
 
 module.exports = {
     name: 'help',
-    description: 'COMANDA | O comanda care afiseaza toate comenzile bot-ului',
+    type: 'command',
+    description: 'O comanda care afiseaza toate comenzile bot-ului',
     execute(message, args){
         fs.readdir('./commands/', (err, files) => {
             if(err) console.log(err);
@@ -20,9 +21,14 @@ module.exports = {
             let result = jsfiles.forEach((f, i) => {
                 let props = require(`./${f}`);
                 namelist = props.name;
+                typelist = props.type;
+                switch(typelist){
+                    case 'command': typelist = 'COMANDA'; break;
+                    case 'response': typelist = 'RASPUNS'; break;
+                }
                 desclist = props.description;
 
-                help_arr.push(`\n\n${namelist}: \n${desclist}`);
+                help_arr.push(`\n\n${namelist}: \n${typelist} | ${desclist}`);
             });
             message.author.send('```PREFIX-UL ESTE //\n(COMENZILE folosesc prefixul, iar RASPUNSURILE nu.)' + help_arr + '```');
         });

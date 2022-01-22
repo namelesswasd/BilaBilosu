@@ -9,7 +9,8 @@ const queueEmbed = new MessageEmbed()
 
 module.exports = {
     name: 'queue',
-    description: 'COMANDA | O comanda care arata ce este in coada (muzica)',
+    type: 'command',
+    description: 'O comanda care arata ce este in coada (muzica)',
     execute(queue, guild, message){
         var song_nr = 0;
         var queue_out = '';

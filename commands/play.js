@@ -51,8 +51,9 @@ function timestampGenerator(x){
 
 module.exports = {
     name: 'play',
-    aliases: ['skip', 's', 'stop', 'queue'],
-    description: 'COMANDA | Comanda pentru a reda ceva de pe youtube la bot',
+    type: 'command',
+    aliases: ['p', 'skip', 'stop', 'queue', 'loop'],
+    description: 'Comanda pentru a reda ceva de pe youtube la bot',
     async execute(message, args, cmd){
         const voiceChannel = message.member.voice.channel;
         const guild = message.guild;
@@ -144,7 +145,7 @@ module.exports = {
                 message.channel.send({embeds: [queueEmbed]});
             }
         }
-        else if(cmd === 'skip' || cmd === 's') {
+        else if(cmd === 'skip') {
             skip_song(message, server_queue);
             if(server_queue === undefined){
                 errorEmbed.fields[0] = {name: 'Nu am putut sa cant melodia:', value: 'nu exista melodii in coada.'};

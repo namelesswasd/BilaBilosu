@@ -1,6 +1,7 @@
 module.exports = {
     name: 'ping',
-    description: 'RASPUNS | Comanda de ping',
+    type: 'response',
+    description: 'Comanda de ping',
     execute(message, args){
         var choice = Math.floor(Math.random() * 4) + 1;
         switch (choice){

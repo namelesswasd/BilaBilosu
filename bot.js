@@ -93,31 +93,11 @@ bot.on('message', (message) => {
             .substring(prefix.length)
             .split(/\s+/);
 
-        //Bila speaks for me toggle
-        if(cmd_name === "bilaToggle" && message.author.id === "208918353845288960"){
-            if(bilaToggle === 0){
-                bilaToggle = 1;
-                message.channel.send("Bila mode **ON**.");
-            } else if (bilaToggle === 1){
-                bilaToggle = 0;
-                message.channel.send("Bila mode **OFF**.")
-            }
-        } else if(cmd_name === "maintenance" && message.author.id === "208918353845288960"){
-            if(devMode === 0){
-                devMode = 1;
-                bot.user.setActivity('| MAINTENANCE', {type: 'WATCHING'});
-                message.channel.send("Developer mode **ON**.");
-            } else if (devMode === 1){
-                devMode = 0;
-                bot.user.setActivity('from above.', {type: 'WATCHING'});
-                message.channel.send("Developer mode **OFF**.");
-            }
-        } else if((cmd_name && !devMode) || (cmd_name && devMode && (message.channel.id === "842493326065139762" || message.channel.id === "648219216456974336"))){
-                if(cmd_name === "play" || cmd_name === "p" || cmd_name === "skip" || cmd_name === "s" || cmd_name === "search" || cmd_name === "stop" || cmd_name === "queue" || cmd_name === "loop"){
-                    bot.commands.get('play').execute(message, args, cmd_name);
-                } else bot.commands.get(`${cmd_name}`).execute(message, args);
-            } else message.reply({embeds: [devEmbed]});
-        }
+        const command = bot.commands.get(cmd_name) || bot.commands.find(a => a.aliases && a.aliases.includes(cmd_name));
+        if(command) command.execute(message, args, cmd_name, bot);
+    }
+
+        
 })
 
 //REPLIES
@@ -142,7 +122,7 @@ bot.on('message', (message) => {
     }
 })
 
-bot.login(process.env.TOKEN);
+//bot.login(process.env.TOKEN);
 
-//const config = require("./config.json");
-//bot.login(config.token);
+const config = require("./config.json");
+bot.login(config.token);

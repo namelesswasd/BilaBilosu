@@ -14,7 +14,8 @@ function getCreationDate(id) { return new Date((id / 4194304) + 1420070400000 + 
 
 module.exports = {
     name: 'serverage',
-    description: 'COMANDA | O comanda care afiseaza cat de vechi este un server',
+    type: 'command',
+    description: 'O comanda care afiseaza cat de vechi este un server',
     execute(message){
         var sv_cr_date = getCreationDate(message.guild.id); 
 
