@@ -122,7 +122,9 @@ bot.on('message', (message) => {
     }
 })
 
-//bot.login(process.env.TOKEN);
+//heroku
+bot.login(process.env.TOKEN);
 
-const config = require("./config.json");
-bot.login(config.token);
+//local
+//const config = require("./config.json");
+//bot.login(config.token);
