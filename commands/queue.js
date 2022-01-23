@@ -8,9 +8,6 @@ const queueEmbed = new MessageEmbed()
     .setFooter('W.I.P. | Bot-ul poate sa fie instabil.');
 
 module.exports = {
-    name: 'queue',
-    type: 'command',
-    description: 'O comanda care arata ce este in coada (muzica)',
     execute(queue, guild, message){
         var song_nr = 0;
         var queue_out = '';
