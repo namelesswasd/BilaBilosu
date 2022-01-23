@@ -127,8 +127,8 @@ bot.on('messageCreate', (message) => {
 })
 
 //heroku
-//bot.login(process.env.TOKEN);
+bot.login(process.env.TOKEN);
 
 //local
-const config = require("./config.json");
-bot.login(config.token);
+//const config = require("./config.json");
+//bot.login(config.token);
