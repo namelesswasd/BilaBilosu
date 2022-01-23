@@ -4,6 +4,7 @@ const { MessageEmbed } = require('discord.js');
 const axios = require('axios');
 const cheerio = require('cheerio');
 const express = require('express');
+const embedCreate = require('../functions/embedCreate');
 
 const app = express();
 

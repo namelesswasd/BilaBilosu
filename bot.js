@@ -1,6 +1,7 @@
 require('dotenv').config();
 
 const {Client, Collection, Intents, MessageEmbed} = require('discord.js');
+const embedCreate = require('./functions/embedCreate');
 
 const fs = require('fs');
 const prefix = '//';
@@ -64,7 +65,7 @@ bot.once('guildMemberRemove', member => {
 })
 
 //COMMANDS
-bot.on('message', (message) => {
+bot.on('messageCreate', (message) => {
     if (message.author.bot) return;
     
     //logging function
@@ -95,13 +96,16 @@ bot.on('message', (message) => {
 
         const command = bot.commands.get(cmd_name) || bot.commands.find(a => a.aliases && a.aliases.includes(cmd_name));
         if(command) command.execute(message, args, cmd_name, bot);
+        else {
+            
+        }
     }
 
         
 })
 
 //REPLIES
-bot.on('message', (message) => {
+bot.on('messageCreate', (message) => {
     if (message.author.bot) return;
     
     if(message.content === 'ping'){ //ping
@@ -114,7 +118,7 @@ bot.on('message', (message) => {
 })
 
 //Bila speaks
-bot.on('message', (message) => {
+bot.on('messageCreate', (message) => {
     if(message.author.bot) return;
     if(message.author.id === "208918353845288960" && bilaToggle === 1){
         message.delete();
@@ -123,8 +127,8 @@ bot.on('message', (message) => {
 })
 
 //heroku
-bot.login(process.env.TOKEN);
+//bot.login(process.env.TOKEN);
 
 //local
-//const config = require("./config.json");
-//bot.login(config.token);
+const config = require("./config.json");
+bot.login(config.token);

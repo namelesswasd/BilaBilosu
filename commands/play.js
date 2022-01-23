@@ -10,6 +10,7 @@ const {
     NoSubscriberBehavior,
 } = require('@discordjs/voice');
 const queueOutput = require('./queue.js');
+const embedCreate = require('../functions/embedCreate');
 
 const playEmbed = new MessageEmbed()
     .setColor('#00ff2f')
@@ -58,23 +59,15 @@ module.exports = {
         const voiceChannel = message.member.voice.channel;
         const guild = message.guild;
 
-        if(!voiceChannel) {
-            errorEmbed.fields[0] = {name: 'Nu am putut sa cant melodia:', value: 'trebuie sa fii pe un canal tambea.'};
-            return message.reply({embeds: [errorEmbed]});
-        }
+        if(!voiceChannel) return message.reply({embeds: [embedCreate.execute('error', 'Nu am putut sa cant melodia:', 'trebuie sa fii pe un canal tambea.')]});
         const permissions = voiceChannel.permissionsFor(message.client.user);
-        if(!permissions.has("CONNECT") || !permissions.has("SPEAK")) {
-            errorEmbed.fields[0] = {name: 'Nu am putut sa cant melodia:', value: 'tu nu ai voie boss.\n_(permisiuni insuficiente)_'};
-            return message.reply({embeds: [errorEmbed]});
-        }
-
+        if(!permissions.has("CONNECT") || !permissions.has("SPEAK")) return message.reply({embeds: [embedCreate.execute('error', 'Nu am putut sa cant melodia:', 'tu nu ai voie boss.\n_(permisiuni insuficiente)_')]});
+       
         const server_queue = queue.get(message.guild.id);
 
         if(cmd === 'play' || cmd === 'p'){
-            if(!args.length) {
-                errorEmbed.fields[0] = {name: 'Nu am putut sa cant melodia:', value: 'ce drq vrei sa iti cant daca nu ai pus nimic?'};
-                return message.reply({embeds: [errorEmbed]});
-            }
+            if(!args.length) return message.reply({embeds: [embedCreate.execute('error', 'Nu am putut sa cant melodia:', 'ce drq vrei sa iti cant daca nu ai pus nimic?')]});
+            
             let song = {};
 
             if(ytdl.validateURL(args[0])){
@@ -97,10 +90,7 @@ module.exports = {
 
                 if(video){
                     song = {title: video.title, url: video.url, author: video.author.name, timestamp: video.timestamp};
-                } else {
-                    errorEmbed.fields[0] = {name: 'Nu am putut sa cant melodia:', value: 'nush ce drq mi-ai dat dar nu am gasit'};
-                    message.reply({embeds: [errorEmbed]});
-                }
+                } else message.reply({embeds: [embedCreate.execute('error', 'Nu am putut sa cant melodia:', 'nush ce drq mi-ai dat dar nu am gasit')]});
             }
 
             if(!server_queue){
@@ -124,39 +114,33 @@ module.exports = {
                     video_player(message.guild, queue_constructor.songs[0], message);
                 } catch (err){
                     queue.delete(message.guild.id);
-                    errorEmbed.fields[0] = {name: 'Nu am putut sa cant melodia:', value: 'nu m-am putut conecta'};
-                    message.reply({embeds: [errorEmbed]});
+                    message.reply({embeds: [embedCreate.execute('error', 'Nu am putut sa cant melodia:', 'nu m-am putut conecta')]});
                     throw err;
                 }
             } else {
                 server_queue.songs.push(song);
-                queueEmbed.fields[0] = {name: 'Am adaugat:', value: `[${song.title}](${song.url}).\nde **${song.author}** _(${song.timestamp})_`};
-                return message.channel.send({embeds: [queueEmbed]});
+                return message.channel.send({embeds: [embedCreate.execute('success2', 'Am adaugat:', `[${song.title}](${song.url}).\nde **${song.author}** _(${song.timestamp})_`)]});
             }
         }
         else if(cmd === 'loop'){
             if(!isLooping) {
                 isLooping = 1;
-                queueEmbed.fields[0] = {name: '*Loop:*', value: 'Coada se va repeta.'};
-                message.channel.send({embeds: [queueEmbed]});
+                message.channel.send({embeds: [embedCreate.execute('success2', 'Loop:', 'Coada se va repeta.')]});
             } else {
                 isLooping = 0;
-                queueEmbed.fields[0] = {name: '*Loop:*', value: 'Coada _nu_ se va mai repeta.'};
-                message.channel.send({embeds: [queueEmbed]});
+                message.channel.send({embeds: [embedCreate.execute('success2', 'Loop:', 'Coada **nu** se va mai repeta.')]});
             }
         }
         else if(cmd === 'skip') {
             skip_song(message, server_queue);
             if(server_queue === undefined){
-                errorEmbed.fields[0] = {name: 'Nu am putut sa cant melodia:', value: 'nu exista melodii in coada.'};
-                return message.reply({embeds: [errorEmbed]});
+                return message.reply({embeds: [embedCreate.execute('error', 'Nu am putut sa cant melodia:', 'nu exista melodii in coada.')]});
             } else video_player(message.guild, server_queue.songs[0], message);
         }
         else if(cmd === 'stop') {
             stop_song(message, server_queue);
             if(server_queue === undefined){
-                errorEmbed.fields[0] = {name: 'Nu am putut sa cant melodia:', value: 'nu exista melodii in coada.'};
-                return message.reply({embeds: [errorEmbed]});
+                return message.reply({embeds: [embedCreate.execute('error', 'Nu am putut sa cant melodia:', 'nu exista melodii in coada.')]});
             } else video_player(message.guild, server_queue.songs[0], message);
         }
         else if(cmd === 'queue'){
@@ -187,8 +171,7 @@ const video_player = async (guild, song, message) => {
     await player.play(resource);
     await song_queue.connection.subscribe(player);
     
-    playEmbed.fields[0] = {name: "Acum cant:", value: `[${song.title}](${song.url})\nde **${song.author}** _(${song.timestamp})_.`};
-    let msg = await message.channel.send({embeds: [playEmbed]});
+    let msg = await message.channel.send({embeds: [embedCreate.execute('success1', 'Acum cant:', `[${song.title}](${song.url})\nde **${song.author}** _(${song.timestamp})_.`)]});
 
     player.on(AudioPlayerStatus.Idle, () => {
         msg.delete();
@@ -203,8 +186,7 @@ const video_player = async (guild, song, message) => {
     player.on('error', error => {
         console.error(error);
         queue.delete(guild.id);
-        errorEmbed.fields[0] = {name: 'Nu am putut sa cant melodia:', value: 'eroare necunoscuta.'};
-        return message.reply({embeds: [errorEmbed]});
+        return message.reply({embeds: [embedCreate.execute('error', 'Nu am putut sa cant melodia:', 'eroare necunoscuta.')]});
     })
     
 }
@@ -216,7 +198,6 @@ const skip_song = async (message, server_queue) => {
 const stop_song = async (message, server_queue) => {
     if(server_queue){
         server_queue.songs = [];
-        queueEmbed.fields[0] = {name: 'Am iesit din canal.', value: 'muvex'};
-        message.channel.send({embeds: [queueEmbed]});
+        message.channel.send({embeds: [embedCreate.execute('success2', 'Am iesit din canal.', 'muvex')]});
     }
 }

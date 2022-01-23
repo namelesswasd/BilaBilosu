@@ -1,5 +1,6 @@
 const fs = require('fs');
 const { MessageEmbed } = require('discord.js'); 
+const embedCreate = require('../functions/embedCreate');
 
 module.exports = {
     name: 'help',
@@ -28,9 +29,10 @@ module.exports = {
                 }
                 desclist = props.description;
 
-                help_arr.push(`\n\n${namelist}: \n${typelist} | ${desclist}`);
+                if(namelist) help_arr.push(`\n\n${namelist}: \n${typelist} | ${desclist}`);
             });
-            message.author.send('```PREFIX-UL ESTE //\n(COMENZILE folosesc prefixul, iar RASPUNSURILE nu.)' + help_arr + '```');
+
+            message.author.send({embeds: [embedCreate.execute('success1', 'Ajutor:', '```PREFIX-UL ESTE //\n(COMENZILE folosesc prefixul, iar RASPUNSURILE nu.)' + help_arr + '```')]});
         });
     }
 }

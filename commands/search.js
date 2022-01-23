@@ -1,6 +1,7 @@
 const ytSearch = require('yt-search');
 const { MessageEmbed, MessageActionRow, MessageButton, Interaction, ButtonInteraction } = require('discord.js');
 const playResult = require('./play');
+const embedCreate = require('../functions/embedCreate');
 
 const searchEmbed = new MessageEmbed()
     .setColor('#00ff99')
@@ -23,14 +24,8 @@ module.exports = {
     async execute(message, args){
         const voiceChannel = message.member.voice.channel;
 
-        if(!voiceChannel) {
-            errorEmbed.fields[0] = {name: 'Nu am putut sa caut:', value: 'trebuie sa fii pe un canal tambea.'};
-            return message.reply({embeds: [errorEmbed]});
-        }
-        if(!args.length) {
-            errorEmbed.fields[0] = {name: 'Nu am putut sa caut:', value: 'ce drq vrei sa iti caut daca nu ai pus nimic?'};
-            return message.reply({embeds: [errorEmbed]});
-        }
+        if(!voiceChannel) return message.reply({embeds: [embedCreate.execute('error', 'Nu am putut sa cant melodia:', 'trebuie sa fii pe un canal tambea.')]});
+        if(!args.length) return message.reply({embeds: [embedCreate.execute('error', 'Nu am putut sa cant melodia:', 'ce drq vrei sa iti cant daca nu ai pus nimic?')]});
 
         const videoResult = await ytSearch(args.join(' '));
 
@@ -45,13 +40,11 @@ module.exports = {
 
         const collector = message.channel.createMessageCollector({ filter, max: 1, time: 60000 }) //collector reply
 
-        searchEmbed.fields[0] = {name: 'Rezultatele cautarii:', value: "```stylus\n" + search_out + "^  Selecteaza un videoclip.```"};
-        message.channel.send({embeds: [searchEmbed]});
+        message.channel.send({embeds: [embedCreate.execute('success2', 'Rezultatele cautarii:', '```stylus\n' + search_out + '^  Selecteaza un videoclip.```')]});
 
         collector.on('collect', msg => {
             if(isNaN(parseInt(msg))) {
-                errorEmbed.fields[0] = {name: 'Nu am putut sa caut:', value: 'Nu ai introdus un numar, anulez cautarea...'};
-                message.reply({embeds: [errorEmbed]});
+                message.reply({embeds: [embedCreate.execute('error', 'Nu am putut sa caut:', 'nu ai introdus un numar, anulez cautarea.')]});
             } else {
                 const result = videoResult.videos[parseInt(msg) - 1].url;
                 playResult.execute(message, [result, ''], 'play');

@@ -1,4 +1,5 @@
 const { MessageEmbed } = require('discord.js');
+const embedCreate = require('../functions/embedCreate');
 
 var c_date = new Date();
 var tzdiff = c_date.getTimezoneOffset() * 60000;
@@ -28,7 +29,6 @@ module.exports = {
         var sv_cr_timestamp = sv_cr_date.toTimeString().slice(0, 8);
         var sv_cr_final = `${sv_cr_dayoftheweek}, ${sv_cr_day} ${sv_cr_month} ${sv_cr_year} @ ${sv_cr_timestamp}`;
 
-        serverAgeEmbed.fields[0] = {name: 'Serverul acesta a fost creat pe:', value: `${sv_cr_final}`};
-        return message.reply({embeds: [serverAgeEmbed]});
+        return message.reply({embeds: [embedCreate.execute('success2', 'Serverul acesta a fost creat pe:', `${sv_cr_final}`)]});
     }
 }

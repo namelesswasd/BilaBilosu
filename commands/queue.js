@@ -1,23 +1,19 @@
 const { MessageEmbed, MessageActionRow, MessageButton, Interaction, ButtonInteraction } = require('discord.js');
-
-const queueEmbed = new MessageEmbed()
-    .setColor('#00ff2f')
-    .addFields(
-        {name: 'Coada:', value: '<blank>'},
-    )
-    .setFooter('W.I.P. | Bot-ul poate sa fie instabil.');
+const embedCreate = require('../functions/embedCreate');
 
 module.exports = {
     execute(queue, guild, message){
         var song_nr = 0;
         var queue_out = '';
+        if(!queue.get(guild.id)){
+            return message.reply({embeds: [embedCreate.execute('error', 'Nu am putut sa execut comanda: ', 'Nu exista nimic in coada.')]});   
+        }
         const song_queue = queue.get(guild.id).songs;
         song_queue.forEach(function (v) {
             song_nr++;
             queue_out = queue_out.concat(`${song_nr}. ${v.title} (${v.timestamp})\n`);
         })
 
-        queueEmbed.fields[0] = {name: 'Coada:', value: "```stylus\nv  Aici esti tu.\n" + queue_out + "```"}
-        message.channel.send({embeds: [queueEmbed]});
+        message.channel.send({embeds: [embedCreate.execute('success1', 'Coada: ', '```stylus\nv  Aici esti tu.\n' + queue_out + '```')]});
     }
 }
