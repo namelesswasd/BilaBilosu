@@ -35,8 +35,11 @@ module.exports = {
             
             let song = {};
 
+            console.log(play.validate(args[0]));
+
+            if(play.yt_validate(args[0]) !== 'video') return message.reply({embeds: [embedCreate.execute('error', 'Nu am putut sa cant melodia', 'Bila nu cunoaste link-ul aceasta momentan.')]});
+
             let video = await play.search(args.join(' '), {limit: 1});
-            console.log(video.video_details);
 
             if(video){
                 song = {
