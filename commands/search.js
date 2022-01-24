@@ -1,4 +1,3 @@
-const ytSearch = require('yt-search');
 const { MessageEmbed, MessageActionRow, MessageButton, Interaction, ButtonInteraction } = require('discord.js');
 const playResult = require('./play');
 const embedCreate = require('../functions/embedCreate');
@@ -8,6 +7,8 @@ module.exports = {
     type: 'command',
     description: 'Comanda care cauta rezultate de pe YouTube.',
     async execute(message, args){
+        return message.reply({embeds: [embedCreate.execute('warn', 'Nu am putut executa comanda:', 'comanda nu este inca diponibila')]});
+
         const voiceChannel = message.member.voice.channel;
 
         if(!voiceChannel) return message.reply({embeds: [embedCreate.execute('error', 'Nu am putut sa cant melodia:', 'trebuie sa fii pe un canal tambea.')]});
