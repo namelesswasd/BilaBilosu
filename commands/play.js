@@ -36,6 +36,7 @@ module.exports = {
             let song = {};
 
             let video = await play.search(args.join(' '), {limit: 1});
+            console.log(video.video_details);
 
             if(video){
                 song = {
@@ -44,7 +45,7 @@ module.exports = {
                     author: video[0].channel.name,
                     timestamp: video[0].durationRaw
                 }
-            } else message.reply({embeds: [embedCreate.execute('error', 'Nu am gasit melodia', 'nush ce drq mi-ai dat dar nu am gasit.')]})
+            } else return message.reply({embeds: [embedCreate.execute('error', 'Nu am gasit melodia', 'nush ce drq mi-ai dat dar nu am gasit.')]})
 
             if(!server_queue){
                 const queue_constructor = {
