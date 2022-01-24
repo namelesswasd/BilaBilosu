@@ -5,7 +5,7 @@ const embedCreate = require('../functions/embedCreate');
 module.exports = {
     name: 'search',
     type: 'command',
-    description: 'Comanda care cauta rezultate de pe YouTube.',
+    description: 'Comanda care cauta rezultate de pe YouTube. (INDISPONIBIL)',
     async execute(message, args){
         return message.reply({embeds: [embedCreate.execute('warn', 'Nu am putut executa comanda:', 'comanda nu este inca diponibila')]});
 
