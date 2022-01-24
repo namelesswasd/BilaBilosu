@@ -24,8 +24,6 @@
     "libsodium-wrappers": "^0.7.9",
     "node-addon-api": "^4.2.0",
     "nodemon": "^2.0.15",
-    "play-dl": "^1.7.9",
-    "yt-search": "^2.10.1",
-    "ytdl-core": "^4.10.0"
+    "play-dl": "^1.7.9"
   }
 }

@@ -32,12 +32,6 @@ let _time = (IntTwoChars(_date.getHours()) + ":" + IntTwoChars(_date.getMinutes(
 var bilaToggle = 0;
 var devMode = 0;
 
-const devEmbed = new MessageEmbed()
-    .setColor('#ffd500')
-    .addFields(
-        {name: "Nu am putut executa comanda!", value: "Bot-ul este in mentenanta."},
-    )
-
 //delay function
 const delay = (msec) => new Promise((resolve) => setTimeout(resolve, msec));
 
@@ -69,18 +63,12 @@ bot.on('messageCreate', (message) => {
     if (message.author.bot) return;
     
     //logging function
-
     const channelMessage = bot.channels.cache.find(channel => channel.name === "messages");
-    const channelMisc = bot.channels.cache.find(channel => channel.name === "miscellaneous");
 
     function log(type){
         switch (type){
             case "mess": //message
                 channelMessage.send(`**${message.author.tag}** *(${message.channel.name})* @ *${_time}* \n> ${message.content}`);
-            break;
-
-            case "misc": //misc
-                //soonTM
             break;
         }
     }
@@ -96,12 +84,8 @@ bot.on('messageCreate', (message) => {
 
         const command = bot.commands.get(cmd_name) || bot.commands.find(a => a.aliases && a.aliases.includes(cmd_name));
         if(command) command.execute(message, args, cmd_name, bot);
-        else {
-            
-        }
-    }
-
-        
+        else message.reply({embeds: [embedCreate.execute('error', 'Nu am putut executa comanda:', 'comanda scrisa nu exista.')]});
+    } 
 })
 
 //REPLIES
@@ -127,8 +111,8 @@ bot.on('messageCreate', (message) => {
 })
 
 //heroku
-bot.login(process.env.TOKEN);
+//bot.login(process.env.TOKEN);
 
 //local
-//const config = require("./config.json");
-//bot.login(config.token);
+const config = require("./config.json");
+bot.login(config.token);

@@ -3,20 +3,6 @@ const { MessageEmbed, MessageActionRow, MessageButton, Interaction, ButtonIntera
 const playResult = require('./play');
 const embedCreate = require('../functions/embedCreate');
 
-const searchEmbed = new MessageEmbed()
-    .setColor('#00ff99')
-    .addFields(
-        {name: 'Coada:', value: '<blank>'},
-    )
-    .setFooter('W.I.P. | Bot-ul poate sa fie instabil.');
-
-const errorEmbed = new MessageEmbed()
-    .setColor('#ff0000')
-    .addFields(
-        {name: 'Nu am putut sa caut:', value: '<blank>'},
-    )
-    .setFooter('W.I.P. | Bot-ul poate sa fie instabil.');
-
 module.exports = {
     name: 'search',
     type: 'command',

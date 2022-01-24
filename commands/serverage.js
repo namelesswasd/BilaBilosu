@@ -4,13 +4,6 @@ const embedCreate = require('../functions/embedCreate');
 var c_date = new Date();
 var tzdiff = c_date.getTimezoneOffset() * 60000;
 
-const serverAgeEmbed = new MessageEmbed()
-    .setColor('#00ff2f')
-    .addFields(
-        {name: 'Serverul acesta a fost creat pe:', value: '<blank>'},
-    )
-    .setFooter('W.I.P. | Bot-ul poate sa fie instabil.');
-
 function getCreationDate(id) { return new Date((id / 4194304) + 1420070400000 + tzdiff); }
 
 module.exports = {
