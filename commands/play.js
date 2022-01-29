@@ -79,6 +79,7 @@ module.exports = {
                 return message.channel.send({embeds: [embedCreate.execute('success2', 'Am adaugat:', `[${song.title}](${song.url}).\nde **${song.author}** _(${song.timestamp})_`)]});
             }
         } else if(cmd === 'loop'){
+            console.log("PLAY | User used loop command.");
             if(!isLooping) {
                 isLooping = 1;
                 message.channel.send({embeds: [embedCreate.execute('success2', 'Loop:', 'Coada se va repeta.')]});
@@ -87,11 +88,13 @@ module.exports = {
                 message.channel.send({embeds: [embedCreate.execute('success2', 'Loop:', 'Coada **nu** se va mai repeta.')]});
             }
         } else if(cmd === 'skip') {
+            console.log("PLAY | User skipped song.");
             skip_song(message, server_queue);
             if(server_queue === undefined){
                 return message.reply({embeds: [embedCreate.execute('error', 'Nu am putut sa cant melodia:', 'nu exista melodii in coada.')]});
             } else video_player(message.guild, server_queue.songs[0], message);
         } else if(cmd === 'stop') {
+            console.log("PLAY | User stopped the songs.");
             stop_song(message, server_queue);
             if(server_queue === undefined){
                 return message.reply({embeds: [embedCreate.execute('error', 'Nu am putut sa cant melodia:', 'nu exista melodii in coada.')]});
@@ -126,13 +129,17 @@ const video_player = async (guild, song, message) => {
     await song_queue.connection.subscribe(player);
 
     let msg = await message.channel.send({embeds: [embedCreate.execute('success1', 'Acum cant:', `[${song.title}](${song.url})\nde **${song.author}** _(${song.timestamp})_.`)]});
-
+    console.log(`PLAY | Now playing [${song.title}](${song.url})\nde **${song.author}** _(${song.timestamp})_.`);
     player.on(AudioPlayerStatus.Idle, () => {
         msg.delete();
         if(isLooping){
+            console.log("PLAY | Looped to the next song.");
             song_queue.songs.push(song_queue.songs[0]);
             song_queue.songs.shift();
-        } else song_queue.songs.shift();
+        } else {
+            console.log("PLAY | Skipped to the next song.");
+            song_queue.songs.shift();
+        }
 
         video_player(guild, song_queue.songs[0], message);
     })
