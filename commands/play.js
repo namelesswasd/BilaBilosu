@@ -9,6 +9,7 @@ const {
 } = require('@discordjs/voice');
 const queueOutput = require('./queue.js');
 const embedCreate = require('../functions/embedCreate');
+const startup = 'https://www.youtube.com/watch?v=N-qSH4WZa6s';
 
 const queue = new Map();
 
@@ -35,11 +36,10 @@ module.exports = {
             
             let song = {};
 
-            console.log(play.validate(args[0]));
-
             if(play.yt_validate(args[0]) === 'playlist') return message.reply({embeds: [embedCreate.execute('error', 'Nu am putut sa cant melodia', 'Bila nu cunoaste link-ul aceasta momentan.')]});
 
             let video = await play.search(args.join(' '), {limit: 1});
+            let startup_video = await play.video_info(startup);
 
             if(video){
                 song = {
@@ -59,6 +59,12 @@ module.exports = {
                 }
 
                 queue.set(message.guild.id, queue_constructor);
+                queue_constructor.songs.push({
+                    title: startup_video.video_details.title,
+                    url: startup_video.video_details.url,
+                    author: startup_video.video_details.channel.name,
+                    timestamp: startup_video.video_details.durationRaw
+                });
                 queue_constructor.songs.push(song);
 
                 try {
@@ -108,6 +114,7 @@ module.exports = {
 
 const video_player = async (guild, song, message) => {
     const song_queue = queue.get(guild.id);
+    let msg;
 
     if(!song){
         queue.delete(guild.id);
@@ -128,13 +135,16 @@ const video_player = async (guild, song, message) => {
     await player.play(resource);
     await song_queue.connection.subscribe(player);
 
-    let msg = await message.channel.send({embeds: [embedCreate.execute('success1', 'Acum cant:', `[${song.title}](${song.url})\nde **${song.author}** _(${song.timestamp})_.`)]});
+    if(song.title !== 'the bluetooth device is ready to pair 2020') msg = await message.channel.send({embeds: [embedCreate.execute('success1', 'Acum cant:', `[${song.title}](${song.url})\nde **${song.author}** _(${song.timestamp})_.`)]});
+    else msg = await message.channel.send({embeds: [embedCreate.execute('warn', 'Connecting...', '_Dă bliuchiuth devais iz redi to per._')]});
+
     console.log(`PLAY | Now playing [${song.title}](${song.url})\nde **${song.author}** _(${song.timestamp})_.`);
+
     player.on(AudioPlayerStatus.Idle, () => {
         msg.delete();
         if(isLooping){
             console.log("PLAY | Looped to the next song.");
-            song_queue.songs.push(song_queue.songs[0]);
+            if(song.title !== 'the bluetooth device is ready to pair 2020') song_queue.songs.push(song_queue.songs[0]);
             song_queue.songs.shift();
         } else {
             console.log("PLAY | Skipped to the next song.");
