@@ -5,8 +5,9 @@ const embedCreate = require('./functions/embedCreate');
 
 const fs = require('fs');
 
-const config = require("./config.json");
-const prefix = config.prefix;
+//const config = require("./config.json");
+//const prefix = config.prefix;
+const prefix = '//';
 
 const myIntents = new Intents();
 myIntents.add(Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_VOICE_STATES, Intents.FLAGS.GUILD_MEMBERS, Intents.FLAGS.GUILD_BANS, Intents.FLAGS.GUILD_MESSAGES, Intents.FLAGS.GUILD_MESSAGE_REACTIONS,Intents.FLAGS.DIRECT_MESSAGES, Intents.FLAGS.DIRECT_MESSAGE_REACTIONS);
@@ -107,8 +108,7 @@ bot.on('messageCreate', (message) => {
 })
 
 //heroku
-//bot.login(process.env.TOKEN);
+bot.login(process.env.TOKEN);
 
 //local
-
-bot.login(config.token);
+//bot.login(config.token);
