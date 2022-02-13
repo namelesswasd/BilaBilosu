@@ -4,7 +4,9 @@ const {Client, Collection, Intents, MessageEmbed} = require('discord.js');
 const embedCreate = require('./functions/embedCreate');
 
 const fs = require('fs');
-const prefix = '//';
+
+const config = require("./config.json");
+const prefix = config.prefix;
 
 const myIntents = new Intents();
 myIntents.add(Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_VOICE_STATES, Intents.FLAGS.GUILD_MEMBERS, Intents.FLAGS.GUILD_BANS, Intents.FLAGS.GUILD_MESSAGES, Intents.FLAGS.GUILD_MESSAGE_REACTIONS,Intents.FLAGS.DIRECT_MESSAGES, Intents.FLAGS.DIRECT_MESSAGE_REACTIONS);
@@ -61,19 +63,6 @@ bot.once('guildMemberRemove', member => {
 //COMMANDS
 bot.on('messageCreate', (message) => {
     if (message.author.bot) return;
-    
-    //logging function
-    const channelMessage = bot.channels.cache.find(channel => channel.name === "messages");
-
-    function log(type){
-        switch (type){
-            case "mess": //message
-                channelMessage.send(`**${message.author.tag}** *(${message.channel.name})* @ *${_time}* \n> ${message.content}`);
-            break;
-        }
-    }
-
-    log("mess");
 
     // actual commands
     if (message.content.startsWith(prefix)){
@@ -101,6 +90,13 @@ bot.on('messageCreate', (message) => {
     }
 })
 
+//LEAGUE FOR MORE THAN 35 MINUTES
+bot.on('messageCreate', (message) => {
+    if(message.member.presence.activities.name === 'League of Legends' && (Math.round(new Date()).getTime() / 1000 - message.member.presence.activities.timestamps.start === 2100)){
+        for(var i = 0; i < 5; i++) message.author.send("IESI DIN LEAGUE IN MOMENTUL ASTA");
+    }
+})
+
 //Bila speaks
 bot.on('messageCreate', (message) => {
     if(message.author.bot) return;
@@ -111,8 +107,8 @@ bot.on('messageCreate', (message) => {
 })
 
 //heroku
-bot.login(process.env.TOKEN);
+//bot.login(process.env.TOKEN);
 
 //local
-//const config = require("./config.json");
-//bot.login(config.token);
+
+bot.login(config.token);
