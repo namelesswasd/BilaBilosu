@@ -92,11 +92,12 @@ bot.on('messageCreate', (message) => {
 })
 
 //LEAGUE FOR MORE THAN 35 MINUTES
+/*
 bot.on('messageCreate', (message) => {
     if(message.member.presence.activities.name === 'League of Legends' && (Math.round(new Date()).getTime() / 1000 - message.member.presence.activities.timestamps.start === 2100)){
         for(var i = 0; i < 5; i++) message.author.send("IESI DIN LEAGUE IN MOMENTUL ASTA");
     }
-})
+})*/
 
 //Bila speaks
 bot.on('messageCreate', (message) => {
